@@ -10,14 +10,14 @@
 .App-header {
     transition: 0.5s;
     opacity: 1;
-    font-size: 5vh;
+    font-size: 7vh;
     font-family: 'Major Mono Display', monospace;
     margin-top: 2%;
 }
 
 .App-header.loading {
     margin-top: 20%;
-    font-size: 7vh;
+    font-size: 10vh;
 }
 
 .games {
@@ -28,13 +28,14 @@
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
-}
-
-.game {
+  }
+  
+  .game {
     position: relative;
     flex: 1 1 auto;
+    width: 20%;
     max-width: 500px;
-    min-width: 100px;
+    min-width: 120px;
     margin: 20px;
     background: #f2f2f2;
     border: 1px solid #ccc;
@@ -181,4 +182,10 @@
     width: 2vh;
     float: right;
     cursor: pointer;
+}
+
+@media (max-height:600px) {
+    .rating.pill {
+        font-size: 4vh;
+    }
 }

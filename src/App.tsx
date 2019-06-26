@@ -23,56 +23,56 @@ const gibberish = [
 
 const games: Game[] = [
   {
-    id: 1,
+    id: '1',
     title: 'Barista Express',
     poster: 'https://supermedium.com/superassets/site/baristaexpress.jpg',
     description: 'Virtually be a barista in your own cafe.',
     rating: 4.7,
     url: 'https://constructarca.de/construct-arcade/game/barista-express/game/'
   }, {
-    id: 2,
+    id: '2',
     title: 'Barista Express',
     poster: 'https://supermedium.com/superassets/site/baristaexpress.jpg',
     description: 'Virtually be a barista in your own cafe.',
     rating: 4.7,
     url: 'https://constructarca.de/construct-arcade/game/barista-express/game/'
   }, {
-    id: 3,
+    id: '3',
     title: 'Barista Express',
     poster: 'https://supermedium.com/superassets/site/baristaexpress.jpg',
     description: 'Virtually be a barista in your own cafe.',
     rating: 4.7,
     url: 'https://constructarca.de/construct-arcade/game/barista-express/game/'
   }, {
-    id: 4,
+    id: '4',
     title: 'Barista Express',
     poster: 'https://supermedium.com/superassets/site/baristaexpress.jpg',
     description: 'Virtually be a barista in your own cafe.',
     rating: 4.7,
     url: 'https://constructarca.de/construct-arcade/game/barista-express/game/'
   }, {
-    id: 5,
+    id: '5',
     title: 'Barista Express',
     poster: 'https://supermedium.com/superassets/site/baristaexpress.jpg',
     description: 'Virtually be a barista in your own cafe.',
     rating: 4.7,
     url: 'https://constructarca.de/construct-arcade/game/barista-express/game/'
   }, {
-    id: 6,
+    id: '6',
     title: 'Barista Express',
     poster: 'https://supermedium.com/superassets/site/baristaexpress.jpg',
     description: 'Virtually be a barista in your own cafe.',
     rating: 4.7,
     url: 'https://constructarca.de/construct-arcade/game/barista-express/game/'
   }, {
-    id: 7,
+    id: '7',
     title: 'Barista Express',
     poster: 'https://supermedium.com/superassets/site/baristaexpress.jpg',
     description: 'Virtually be a barista in your own cafe.',
     rating: 4.7,
     url: 'https://constructarca.de/construct-arcade/game/barista-express/game/'
   }, {
-    id: 8,
+    id: '8',
     title: 'Barista Express',
     poster: 'https://supermedium.com/superassets/site/baristaexpress.jpg',
     description: 'Virtually be a barista in your own cafe.',
@@ -82,7 +82,7 @@ const games: Game[] = [
 ];
 
 interface Game {
-  id: number,
+  id: string,
   title: string,
   poster: string,
   video?: string,
@@ -96,6 +96,7 @@ interface AppState {
   baffle?: any,
   games?: Game[],
   reviewing?: Game,
+  viewing?: Game,
 }
 
 function sleep(ms: number) {
@@ -129,8 +130,10 @@ class App extends React.Component<any, AppState> {
 
   componentDidMount() {
     if (window.location.hash) {
+      const [actionType, id] = window.location.hash.slice(1).split('--');
       this.setState({
-        reviewing: games.find(g => g.id === Number(window.location.hash.slice(1)))
+        ...this.state,
+        [actionType]: games.find(g => g.id === id)
       });
     }
     if (!this.state.hasLoaded && !this.state.baffle) {
@@ -146,6 +149,7 @@ class App extends React.Component<any, AppState> {
     const showHeader = this.state.hasLoaded || this.state.baffle;
     const showGames = this.state.games && this.state.hasLoaded;
     const reviewing = this.state.reviewing;
+    const viewing = this.state.viewing;
     const closeOverlay = () => {
       window.location.hash = '';
       this.setState({ ...this.state, reviewing: undefined });
@@ -155,19 +159,49 @@ class App extends React.Component<any, AppState> {
         <header className={`App-header ${!this.state.hasLoaded ? 'loading' : ''}`} style={{ opacity: showHeader ? 1 : 0 }}>
           XRca.de
         </header>
+
+        <div className={`viewing ${viewing && showGames ? 'show' : ''}`} id={viewing ? 'viewing--' + viewing.id : ''}>
+          {viewing ? (<>
+            <h2>{viewing.title}</h2>
+            <div className="info">
+              <div className="left">
+                <video poster={viewing.poster}></video>
+              </div>
+              <div className="right">
+                {viewing.description}
+                <div className='rating-cont'>
+                  <div className="rating pill">{viewing.rating}*</div>
+                </div>
+                <a href={viewing.url} className="play-button" onClick={(ev) => {
+                  window.location.hash = 'reviewing--' + viewing.id;
+                }}>PLAY</a>
+              </div>
+            </div>
+          </>) : null}
+        </div>
+
         <div className="games" style={{ opacity: showGames ? 1 : 0 }}>
           {(this.state.games || []).map(game => {
-            return <div className="game">
+            return <div className="game" id={game.id}>
+              <div className="info-button-cont" onClick={() => {
+                this.setState({
+                  ...this.state,
+                  viewing: game,
+                });
+                window.location.hash = 'viewing--' + game.id;
+              }}>
+                <img src='./info.svg' className='info-button' />
+              </div>
               <video poster={game.poster}></video>
               <div className='rating-cont'>
-                <div className="rating pill">{game.rating}*</div>
+                <div className="rating pill">{game.rating} <img src='./star.svg' /></div>
               </div>
               <div className="info">
                 {game.description}
                 <br />
                 <br />
                 <a href={game.url} className="play-button" onClick={(ev) => {
-                  window.location.hash = '' + game.id;
+                  window.location.hash = 'reviewing--' + game.id;
                 }}>PLAY</a>
               </div>
             </div>

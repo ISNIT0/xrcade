@@ -28,14 +28,14 @@
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
-  }
-  
-  .game {
+}
+
+.game {
     position: relative;
     flex: 1 1 auto;
     width: 20%;
     max-width: 500px;
-    min-width: 120px;
+    min-width: 250px;
     margin: 20px;
     background: #f2f2f2;
     border: 1px solid #ccc;
@@ -81,7 +81,7 @@
 .viewing {
     margin-top: 1vh;
     opacity: 0;
-    transition: 0.5s;
+    transition: 2s;
     background: #f2f2f2;
     border: 1px solid #ccc;
     max-height: 0%;
@@ -89,7 +89,7 @@
 
 .viewing.show {
     opacity: 1;
-    max-height: 50%;
+    max-height: 200%;
 }
 
 .viewing .info {
@@ -179,7 +179,7 @@
 }
 
 .info-button-cont .info-button {
-    width: 2vh;
+    height: 3vh;
     float: right;
     cursor: pointer;
 }
@@ -187,5 +187,13 @@
 @media (max-height:600px) {
     .rating.pill {
         font-size: 4vh;
+    }
+
+    .info-button-cont .info-button {
+        height: 4vw;
+    }
+
+    .play-button {
+      font-size: 6vh;
     }
 }

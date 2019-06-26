@@ -1,33 +1,124 @@
 .App {
-  text-align: center;
-}
-
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
+    text-align: center;
+    background: #fff;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    font-family: 'Open Sans', sans-serif;
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+    transition: 0.5s;
+    opacity: 1;
+    font-size: 5vw;
+    font-family: 'Major Mono Display', monospace;
+    margin-top: 2%;
 }
 
-.App-link {
-  color: #61dafb;
+.App-header.loading {
+    margin-top: 20%;
+    font-size: 7vw;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.games {
+    padding-top: 2%;
+    transition: 0.5s;
+    opacity: 1;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.game {
+    position: relative;
+    flex: 1 1 auto;
+    max-width: 500px;
+    min-width: 200px;
+    margin: 20px;
+    background: #f2f2f2;
+    border: 1px solid #ccc;
+}
+
+.game video {
+    width: 100%;
+}
+
+
+.game .info {
+    position: relative;
+    min-height: 60px;
+    padding: 10px;
+}
+
+.game .rating-cont {
+    margin-top: -1.5vw;
+    font-weight: bold;
+    font-size: 1.5vw;
+}
+
+.game .play-button {
+    background: #000;
+    font-family: 'Major Mono Display', monospace;
+    color: #fff;
+    padding: 10px;
+    display: inline-block;
+    text-decoration: none;
+    font-size: 1.5vw;
+}
+
+
+.pill {
+    background: #fff;
+    font-family: 'Major Mono Display', monospace;
+    padding: 10px 15px;
+    color: #000;
+    border-radius: 25px;
+    display: inline-block;
+}
+
+
+.overlay {
+    opacity: 0;
+    background: rgba(0, 0, 0, 0.7);
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.overlay.show {
+    opacity: 1;
+    pointer-events: initial;
+}
+
+.review-cont {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.review {
+    background: #fff;
+    width: 40%;
+    position: relative;
+    padding: 1vw;
+    pointer-events: initial;
+    cursor:initial;
+}
+
+.review .close {
+    font-family: 'Major Mono Display', monospace;
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 2vw;
+    padding: 0.5vw;
+    cursor: pointer;
 }

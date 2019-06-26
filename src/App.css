@@ -10,14 +10,14 @@
 .App-header {
     transition: 0.5s;
     opacity: 1;
-    font-size: 5vw;
+    font-size: 5vh;
     font-family: 'Major Mono Display', monospace;
     margin-top: 2%;
 }
 
 .App-header.loading {
     margin-top: 20%;
-    font-size: 7vw;
+    font-size: 7vh;
 }
 
 .games {
@@ -34,7 +34,7 @@
     position: relative;
     flex: 1 1 auto;
     max-width: 500px;
-    min-width: 200px;
+    min-width: 100px;
     margin: 20px;
     background: #f2f2f2;
     border: 1px solid #ccc;
@@ -52,24 +52,33 @@
 }
 
 .game .rating-cont {
-    margin-top: -1.5vw;
+    margin-top: -40px;
+}
+
+.rating.pill {
     font-weight: bold;
-    font-size: 1.5vw;
+    font-size: 2vh;
+    margin-bottom: 10px;
+}
+
+.rating .rating-num {
+    line-height: 31px;
+    float: left;
 }
 
 .play-button {
     background: #000;
     font-family: 'Major Mono Display', monospace;
     color: #fff;
-    padding: 10px;
+    padding: 10px 30px;
     display: inline-block;
     text-decoration: none;
-    font-size: 1.5vw;
+    font-size: 3vh;
 }
 
 
 .viewing {
-    margin-top: 1vw;
+    margin-top: 1vh;
     opacity: 0;
     transition: 0.5s;
     background: #f2f2f2;
@@ -85,6 +94,7 @@
 .viewing .info {
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
 }
 
 .viewing video {
@@ -93,10 +103,11 @@
 
 .viewing .info .left,
 .viewing .info .right {
-    padding: 1vw;
+    padding: 1vh;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
+    min-width: 200px;
 }
 
 
@@ -140,7 +151,7 @@
     background: #fff;
     width: 40%;
     position: relative;
-    padding: 1vw;
+    padding: 1vh;
     pointer-events: initial;
     cursor: initial;
 }
@@ -150,13 +161,14 @@
     position: absolute;
     right: 0;
     top: 0;
-    font-size: 2vw;
-    padding: 0.5vw;
+    font-size: 2vh;
+    padding: 0.5vh;
     cursor: pointer;
 }
 
 .info-button-cont {
     position: absolute;
+    z-index: 10;
     right: 0;
     top: 0;
     width: 20%;
@@ -166,7 +178,7 @@
 }
 
 .info-button-cont .info-button {
-    width: 2vw;
+    width: 2vh;
     float: right;
     cursor: pointer;
 }

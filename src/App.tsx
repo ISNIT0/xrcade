@@ -162,8 +162,18 @@ class App extends React.Component<any, AppState> {
       window.location.hash = '';
       this.setState({ ...this.state, reviewing: undefined });
     };
-    const startVideo = (ev:any) => ev.target.play && ev.target.play();
-    const stopVideo = (ev:any) => ev.target.load && ev.target.load();
+    const startVideo = (ev: any) => {
+      const el = ev.target.closest('.game').querySelector('video');
+      el.play && el.play();
+    }
+    const stopVideo = (ev: any) => {
+      const el = ev.target.closest('.game').querySelector('video');
+      el.load && el.load();
+    }
+    const playGame = (game:Game) => {
+      window.location.hash = 'reviewing--' + game.id;
+      (window.location as any) = game.url;
+    }
     return (
       <div className="App">
         <header className={`App-header ${!this.state.hasLoaded ? 'loading' : ''}`} style={{ opacity: showHeader ? 1 : 0 }}>
@@ -180,7 +190,7 @@ class App extends React.Component<any, AppState> {
               <div className="right">
                 {viewing.description}
                 <div className='rating-cont'>
-                  <div className="rating pill">{viewing.rating} <img src='./star.svg' /></div>
+                  <div className="rating pill"><span className="rating-num">{viewing.rating} </span><img src='./star.svg' /></div>
                 </div>
                 <a href={viewing.url} className="play-button" onClick={(ev) => {
                   window.location.hash = 'reviewing--' + viewing.id;
@@ -192,8 +202,10 @@ class App extends React.Component<any, AppState> {
 
         <div className="games" style={{ opacity: showGames ? 1 : 0 }}>
           {(this.state.games || []).map(game => {
-            return <div className="game" id={game.id}>
-              <div className="info-button-cont" onClick={() => {
+            return <div className="game" id={game.id}  onMouseEnter={startVideo} onMouseLeave={stopVideo} onClick={() => playGame(game)}>
+              <div className="info-button-cont" onClick={(ev) => {
+                ev.preventDefault();
+                ev.stopPropagation();
                 this.setState({
                   ...this.state,
                   viewing: game,
@@ -202,17 +214,15 @@ class App extends React.Component<any, AppState> {
               }}>
                 <img src='./info.svg' className='info-button' />
               </div>
-              <video poster={game.poster} src={game.video} loop={true} onMouseEnter={startVideo} onMouseLeave={stopVideo}></video>
-              <div className='rating-cont'>
-                <div className="rating pill">{game.rating} <img src='./star.svg' /></div>
-              </div>
+              <video poster={game.poster} src={game.video} loop={true}></video>
               <div className="info">
+                <div className='rating-cont'>
+                  <div className="rating pill"><span className="rating-num">{game.rating} </span><img src='./star.svg' /></div>
+                </div>
                 {game.description}
                 <br />
                 <br />
-                <a href={game.url} className="play-button" onClick={(ev) => {
-                  window.location.hash = 'reviewing--' + game.id;
-                }}>PLAY</a>
+                <a href={game.url} className="play-button" onClick={() => playGame(game)}>PLAY</a>
               </div>
             </div>
           })}

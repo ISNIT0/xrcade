@@ -25,6 +25,7 @@ const games: Game[] = [
   {
     id: '1',
     title: 'Barista Express',
+    video: './baristaexpress.mp4',
     poster: 'https://supermedium.com/superassets/site/baristaexpress.jpg',
     description: 'Virtually be a barista in your own cafe.',
     rating: 4.7,
@@ -32,6 +33,7 @@ const games: Game[] = [
   }, {
     id: '2',
     title: 'Barista Express',
+    video: './baristaexpress.mp4',
     poster: 'https://supermedium.com/superassets/site/baristaexpress.jpg',
     description: 'Virtually be a barista in your own cafe.',
     rating: 4.7,
@@ -39,6 +41,7 @@ const games: Game[] = [
   }, {
     id: '3',
     title: 'Barista Express',
+    video: './baristaexpress.mp4',
     poster: 'https://supermedium.com/superassets/site/baristaexpress.jpg',
     description: 'Virtually be a barista in your own cafe.',
     rating: 4.7,
@@ -46,6 +49,7 @@ const games: Game[] = [
   }, {
     id: '4',
     title: 'Barista Express',
+    video: './baristaexpress.mp4',
     poster: 'https://supermedium.com/superassets/site/baristaexpress.jpg',
     description: 'Virtually be a barista in your own cafe.',
     rating: 4.7,
@@ -53,6 +57,7 @@ const games: Game[] = [
   }, {
     id: '5',
     title: 'Barista Express',
+    video: './baristaexpress.mp4',
     poster: 'https://supermedium.com/superassets/site/baristaexpress.jpg',
     description: 'Virtually be a barista in your own cafe.',
     rating: 4.7,
@@ -60,6 +65,7 @@ const games: Game[] = [
   }, {
     id: '6',
     title: 'Barista Express',
+    video: './baristaexpress.mp4',
     poster: 'https://supermedium.com/superassets/site/baristaexpress.jpg',
     description: 'Virtually be a barista in your own cafe.',
     rating: 4.7,
@@ -67,6 +73,7 @@ const games: Game[] = [
   }, {
     id: '7',
     title: 'Barista Express',
+    video: './baristaexpress.mp4',
     poster: 'https://supermedium.com/superassets/site/baristaexpress.jpg',
     description: 'Virtually be a barista in your own cafe.',
     rating: 4.7,
@@ -74,6 +81,7 @@ const games: Game[] = [
   }, {
     id: '8',
     title: 'Barista Express',
+    video: './baristaexpress.mp4',
     poster: 'https://supermedium.com/superassets/site/baristaexpress.jpg',
     description: 'Virtually be a barista in your own cafe.',
     rating: 4.7,
@@ -154,6 +162,8 @@ class App extends React.Component<any, AppState> {
       window.location.hash = '';
       this.setState({ ...this.state, reviewing: undefined });
     };
+    const startVideo = (ev:any) => ev.target.play && ev.target.play();
+    const stopVideo = (ev:any) => ev.target.load && ev.target.load();
     return (
       <div className="App">
         <header className={`App-header ${!this.state.hasLoaded ? 'loading' : ''}`} style={{ opacity: showHeader ? 1 : 0 }}>
@@ -165,12 +175,12 @@ class App extends React.Component<any, AppState> {
             <h2>{viewing.title}</h2>
             <div className="info">
               <div className="left">
-                <video poster={viewing.poster}></video>
+                <video poster={viewing.poster} src={viewing.video} loop={true} autoPlay={true} controls></video>
               </div>
               <div className="right">
                 {viewing.description}
                 <div className='rating-cont'>
-                  <div className="rating pill">{viewing.rating}*</div>
+                  <div className="rating pill">{viewing.rating} <img src='./star.svg' /></div>
                 </div>
                 <a href={viewing.url} className="play-button" onClick={(ev) => {
                   window.location.hash = 'reviewing--' + viewing.id;
@@ -192,7 +202,7 @@ class App extends React.Component<any, AppState> {
               }}>
                 <img src='./info.svg' className='info-button' />
               </div>
-              <video poster={game.poster}></video>
+              <video poster={game.poster} src={game.video} loop={true} onMouseEnter={startVideo} onMouseLeave={stopVideo}></video>
               <div className='rating-cont'>
                 <div className="rating pill">{game.rating} <img src='./star.svg' /></div>
               </div>

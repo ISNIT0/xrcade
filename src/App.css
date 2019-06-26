@@ -87,6 +87,10 @@
     justify-content: center;
 }
 
+.viewing video {
+    max-width: 500px;
+}
+
 .viewing .info .left,
 .viewing .info .right {
     padding: 1vw;

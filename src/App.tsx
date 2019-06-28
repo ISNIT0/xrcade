@@ -170,7 +170,7 @@ class App extends React.Component<any, AppState> {
       const el = ev.target.closest('.game').querySelector('video');
       el.load && el.load();
     }
-    const playGame = (game:Game) => {
+    const playGame = (game: Game) => {
       window.location.hash = 'reviewing--' + game.id;
       (window.location as any) = game.url;
     }
@@ -202,7 +202,7 @@ class App extends React.Component<any, AppState> {
 
         <div className="games" style={{ opacity: showGames ? 1 : 0 }}>
           {(this.state.games || []).map(game => {
-            return <div className="game" id={game.id}  onMouseEnter={startVideo} onMouseLeave={stopVideo} onClick={() => playGame(game)}>
+            return <div className="game" id={game.id} onMouseEnter={startVideo} onMouseLeave={stopVideo} onClick={() => playGame(game)}>
               <div className="info-button-cont" onClick={(ev) => {
                 ev.preventDefault();
                 ev.stopPropagation();

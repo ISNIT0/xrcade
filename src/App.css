@@ -75,6 +75,13 @@
     display: inline-block;
     text-decoration: none;
     font-size: 3vh;
+    transition: 0.3s;
+}
+
+.play-button:hover {
+    background: #fff;
+    color: #000;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.4);
 }
 
 
@@ -135,6 +142,7 @@
     flex-direction: column;
     justify-content: center;
     cursor: pointer;
+    z-index: 20;
 }
 
 .overlay.show {
@@ -194,6 +202,6 @@
     }
 
     .play-button {
-      font-size: 6vh;
+        font-size: 6vh;
     }
 }

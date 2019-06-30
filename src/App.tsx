@@ -24,16 +24,16 @@ const gibberish = [
 const games: Game[] = [
   {
     id: '1',
-    title: 'Barista Express',
-    video: './baristaexpress.mp4',
+    title: 'Dance Tonite',
+    video: './videos/dance_tonite.mp4',
     poster: 'https://supermedium.com/superassets/site/baristaexpress.jpg',
-    description: 'Virtually be a barista in your own cafe.',
+    description: 'Dance Tonite.',
     rating: 4.7,
-    url: 'https://constructarca.de/construct-arcade/game/barista-express/game/'
+    url: 'https://tonite.dance'
   }, {
     id: '2',
     title: 'Barista Express',
-    video: './baristaexpress.mp4',
+    video: './videos/barista_express.mp4',
     poster: 'https://supermedium.com/superassets/site/baristaexpress.jpg',
     description: 'Virtually be a barista in your own cafe.',
     rating: 4.7,
@@ -41,7 +41,7 @@ const games: Game[] = [
   }, {
     id: '3',
     title: 'Barista Express',
-    video: './baristaexpress.mp4',
+    video: './videos/barista_express.mp4',
     poster: 'https://supermedium.com/superassets/site/baristaexpress.jpg',
     description: 'Virtually be a barista in your own cafe.',
     rating: 4.7,
@@ -49,7 +49,7 @@ const games: Game[] = [
   }, {
     id: '4',
     title: 'Barista Express',
-    video: './baristaexpress.mp4',
+    video: './videos/barista_express.mp4',
     poster: 'https://supermedium.com/superassets/site/baristaexpress.jpg',
     description: 'Virtually be a barista in your own cafe.',
     rating: 4.7,
@@ -57,7 +57,7 @@ const games: Game[] = [
   }, {
     id: '5',
     title: 'Barista Express',
-    video: './baristaexpress.mp4',
+    video: './videos/barista_express.mp4',
     poster: 'https://supermedium.com/superassets/site/baristaexpress.jpg',
     description: 'Virtually be a barista in your own cafe.',
     rating: 4.7,
@@ -65,7 +65,7 @@ const games: Game[] = [
   }, {
     id: '6',
     title: 'Barista Express',
-    video: './baristaexpress.mp4',
+    video: './videos/barista_express.mp4',
     poster: 'https://supermedium.com/superassets/site/baristaexpress.jpg',
     description: 'Virtually be a barista in your own cafe.',
     rating: 4.7,
@@ -73,7 +73,7 @@ const games: Game[] = [
   }, {
     id: '7',
     title: 'Barista Express',
-    video: './baristaexpress.mp4',
+    video: './videos/barista_express.mp4',
     poster: 'https://supermedium.com/superassets/site/baristaexpress.jpg',
     description: 'Virtually be a barista in your own cafe.',
     rating: 4.7,
@@ -81,7 +81,7 @@ const games: Game[] = [
   }, {
     id: '8',
     title: 'Barista Express',
-    video: './baristaexpress.mp4',
+    video: './videos/barista_express.mp4',
     poster: 'https://supermedium.com/superassets/site/baristaexpress.jpg',
     description: 'Virtually be a barista in your own cafe.',
     rating: 4.7,

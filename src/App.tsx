@@ -2,6 +2,8 @@ import React from 'react';
 import './App.css';
 
 import baffle from 'baffle';
+import { getJSON, postJSON } from './util';
+import { config } from './config';
 
 const gibberish = [
   '\u2588',
@@ -21,76 +23,9 @@ const gibberish = [
   '\u002f'
 ];
 
-const games: Game[] = [
-  {
-    id: '1',
-    title: 'Dance Tonite',
-    video: './videos/dance_tonite.mp4',
-    poster: 'https://supermedium.com/superassets/site/baristaexpress.jpg',
-    description: 'Dance Tonite.',
-    rating: 4.7,
-    url: 'https://tonite.dance'
-  }, {
-    id: '2',
-    title: 'Barista Express',
-    video: './videos/barista_express.mp4',
-    poster: 'https://supermedium.com/superassets/site/baristaexpress.jpg',
-    description: 'Virtually be a barista in your own cafe.',
-    rating: 4.7,
-    url: 'https://constructarca.de/construct-arcade/game/barista-express/game/'
-  }, {
-    id: '3',
-    title: 'Barista Express',
-    video: './videos/barista_express.mp4',
-    poster: 'https://supermedium.com/superassets/site/baristaexpress.jpg',
-    description: 'Virtually be a barista in your own cafe.',
-    rating: 4.7,
-    url: 'https://constructarca.de/construct-arcade/game/barista-express/game/'
-  }, {
-    id: '4',
-    title: 'Barista Express',
-    video: './videos/barista_express.mp4',
-    poster: 'https://supermedium.com/superassets/site/baristaexpress.jpg',
-    description: 'Virtually be a barista in your own cafe.',
-    rating: 4.7,
-    url: 'https://constructarca.de/construct-arcade/game/barista-express/game/'
-  }, {
-    id: '5',
-    title: 'Barista Express',
-    video: './videos/barista_express.mp4',
-    poster: 'https://supermedium.com/superassets/site/baristaexpress.jpg',
-    description: 'Virtually be a barista in your own cafe.',
-    rating: 4.7,
-    url: 'https://constructarca.de/construct-arcade/game/barista-express/game/'
-  }, {
-    id: '6',
-    title: 'Barista Express',
-    video: './videos/barista_express.mp4',
-    poster: 'https://supermedium.com/superassets/site/baristaexpress.jpg',
-    description: 'Virtually be a barista in your own cafe.',
-    rating: 4.7,
-    url: 'https://constructarca.de/construct-arcade/game/barista-express/game/'
-  }, {
-    id: '7',
-    title: 'Barista Express',
-    video: './videos/barista_express.mp4',
-    poster: 'https://supermedium.com/superassets/site/baristaexpress.jpg',
-    description: 'Virtually be a barista in your own cafe.',
-    rating: 4.7,
-    url: 'https://constructarca.de/construct-arcade/game/barista-express/game/'
-  }, {
-    id: '8',
-    title: 'Barista Express',
-    video: './videos/barista_express.mp4',
-    poster: 'https://supermedium.com/superassets/site/baristaexpress.jpg',
-    description: 'Virtually be a barista in your own cafe.',
-    rating: 4.7,
-    url: 'https://constructarca.de/construct-arcade/game/barista-express/game/'
-  }
-];
-
 interface Game {
   id: string,
+  friendlyId: string,
   title: string,
   poster: string,
   video?: string,
@@ -125,6 +60,7 @@ class App extends React.Component<any, AppState> {
   }
 
   async loadDeps() {
+    const games = await getJSON<Game[]>(`${config.api}/game/all`);
     await this.loadImages(games.slice(0, 8).map(g => g.poster));
     (this.state.baffle as any).reveal(500);
     await sleep(1000);
@@ -134,9 +70,6 @@ class App extends React.Component<any, AppState> {
       baffle: null,
       games,
     });
-  }
-
-  componentDidMount() {
     if (window.location.hash) {
       const [actionType, id] = window.location.hash.slice(1).split('--');
       this.setState({
@@ -144,6 +77,9 @@ class App extends React.Component<any, AppState> {
         [actionType]: games.find(g => g.id === id)
       });
     }
+  }
+
+  componentDidMount() {
     if (!this.state.hasLoaded && !this.state.baffle) {
       this.setState({
         ...this.state,
@@ -234,9 +170,7 @@ class App extends React.Component<any, AppState> {
                 <div className="review" onClick={(ev) => ev.stopPropagation()}>
                   <div className="close" onClick={closeOverlay}>x</div>
                   <h2>How was {reviewing.title}?</h2>
-                  <div className="rating">
-                    TODO: add rating buttons here
-                  </div>
+                  <RateGame game={reviewing} />
 
                   TODO: add share buttons
                 </div>
@@ -246,6 +180,48 @@ class App extends React.Component<any, AppState> {
         </div>
       </div>
     );
+  }
+}
+
+interface RateGameState {
+  game: Game,
+  reviewSaving: 'not_selected' | 'pending' | 'saved',
+}
+class RateGame extends React.Component<{ game: Game }, RateGameState> {
+  state: any = {
+    game: null,
+    reviewSaving: 'not_selected'
+  };
+
+  componentDidMount() {
+    this.setState({
+      ...this.state,
+      game: this.props.game
+    });
+  }
+
+  async rateGame(rating: number) {
+    this.setState({ reviewSaving: 'pending' });
+    await postJSON(`${config.api}/game/rate/${this.state.game.id}`, { value: rating });
+    this.setState({ reviewSaving: 'saved' });
+  }
+
+  render() {
+    return <div>
+      {this.state.reviewSaving === 'not_selected'
+        ? <>
+          <button onClick={() => this.rateGame(1)}>1</button>
+          <button onClick={() => this.rateGame(2)}>2</button>
+          <button onClick={() => this.rateGame(3)}>3</button>
+          <button onClick={() => this.rateGame(4)}>4</button>
+          <button onClick={() => this.rateGame(5)}>5</button>
+        </>
+        :
+        this.state.reviewSaving === 'pending'
+          ? <>Saving...</>
+          : <>Saved</>
+      }
+    </div>;
   }
 }
 

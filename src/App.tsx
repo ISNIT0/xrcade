@@ -126,7 +126,7 @@ class App extends React.Component<any, AppState> {
               <div className="right">
                 {viewing.description}
                 <div className='rating-cont'>
-                  <div className="rating pill"><span className="rating-num">{viewing.rating} </span><img src='./star.svg' /></div>
+                  <div className="rating pill"><span className="rating-num">{viewing.rating || '?'} </span><img src='./star.svg' /></div>
                 </div>
                 <a href={viewing.url} className="play-button" onClick={(ev) => {
                   window.location.hash = 'reviewing--' + viewing.id;
@@ -153,7 +153,7 @@ class App extends React.Component<any, AppState> {
               <video poster={game.poster} src={game.video} loop={true}></video>
               <div className="info">
                 <div className='rating-cont'>
-                  <div className="rating pill"><span className="rating-num">{game.rating} </span><img src='./star.svg' /></div>
+                  <div className="rating pill"><span className="rating-num">{game.rating || '?'} </span><img src='./star.svg' /></div>
                 </div>
                 {game.description}
                 <br />

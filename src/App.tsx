@@ -107,6 +107,7 @@ class App extends React.Component<any, AppState> {
       el.load && el.load();
     }
     const playGame = (game: Game) => {
+      handleOutboundLink(game.url);
       window.location.hash = 'reviewing--' + game.id;
       (window.location as any) = game.url;
     }
@@ -130,6 +131,7 @@ class App extends React.Component<any, AppState> {
                 </div>
                 <a href={viewing.url} className="play-button" onClick={(ev) => {
                   window.location.hash = 'reviewing--' + viewing.id;
+                  handleOutboundLink(viewing.url);
                 }}>PLAY</a>
               </div>
             </div>
@@ -226,3 +228,11 @@ class RateGame extends React.Component<{ game: Game }, RateGameState> {
 }
 
 export default App;
+
+function handleOutboundLink(href: string) {
+  (window as any).ga('send', 'event', {
+    eventCategory: 'Outbound Link',
+    eventAction: 'click',
+    eventLabel: href
+  });
+}

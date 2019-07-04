@@ -233,7 +233,7 @@ class ShareGame extends React.Component<{ game: Game }> {
     return <div>
       <ul className="share-buttons">
         <li><a href={`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${title}`} title="Share on Facebook" target="_blank"><img alt="Share on Facebook" src="images/social_flat_rounded_rects_svg/Facebook.svg" /></a></li>
-        <li><a href={`https://twitter.com/intent/tweet?source=${url}&text=${title}:%20${url}&via=jreeve0`} target="_blank" title="Tweet"><img alt="Tweet" src="images/social_flat_rounded_rects_svg/Twitter.svg" /></a></li>
+        <li><a href={`https://twitter.com/intent/tweet?source=${url}&text=${title}:%20${url}&via=xrca_de`} target="_blank" title="Tweet"><img alt="Tweet" src="images/social_flat_rounded_rects_svg/Twitter.svg" /></a></li>
         <li><a href={`http://www.reddit.com/submit?url=${url}&title=${title}`} target="_blank" title="Submit to Reddit"><img alt="Submit to Reddit" src="images/social_flat_rounded_rects_svg/Reddit.svg" /></a></li>
         <li><a href={`http://www.linkedin.com/shareArticle?mini=true&url=${url}&title=${title}&summary=${body}&source=${url}`} target="_blank" title="Share on LinkedIn"><img alt="Share on LinkedIn" src="images/social_flat_rounded_rects_svg/LinkedIn.svg" /></a></li>
         <li><a href={`mailto:?subject=${title}&body=${body}:%20${url}`} target="_blank" title="Send email"><img alt="Send email" src="images/social_flat_rounded_rects_svg/Email.svg" /></a></li>

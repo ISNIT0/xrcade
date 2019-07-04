@@ -71,10 +71,10 @@ class App extends React.Component<any, AppState> {
       games,
     });
     if (window.location.hash) {
-      const [actionType, id] = window.location.hash.slice(1).split('--');
+      const [actionType, friendlyId] = window.location.hash.slice(1).split('--');
       this.setState({
         ...this.state,
-        [actionType]: games.find(g => g.id === id)
+        [actionType]: games.find(g => g.friendlyId === friendlyId)
       });
     }
   }
@@ -108,7 +108,7 @@ class App extends React.Component<any, AppState> {
     }
     const playGame = (game: Game) => {
       handleOutboundLink(game.url);
-      window.location.hash = 'reviewing--' + game.id;
+      window.location.hash = 'reviewing--' + game.friendlyId;
       (window.location as any) = game.url;
     }
     return (
@@ -117,7 +117,7 @@ class App extends React.Component<any, AppState> {
           XRca.de
         </header>
 
-        <div className={`viewing ${viewing && showGames ? 'show' : ''}`} id={viewing ? 'viewing--' + viewing.id : ''}>
+        <div className={`viewing ${viewing && showGames ? 'show' : ''}`} id={viewing ? 'viewing--' + viewing.friendlyId : ''}>
           {viewing ? (<>
             <h2>{viewing.title}</h2>
             <div className="info">
@@ -129,8 +129,9 @@ class App extends React.Component<any, AppState> {
                 <div className='rating-cont'>
                   <div className="rating pill"><span className="rating-num">{viewing.rating || '?'} </span><img src='./star.svg' /></div>
                 </div>
+                <ShareGame game={viewing} />
                 <a href={viewing.url} className="play-button" onClick={(ev) => {
-                  window.location.hash = 'reviewing--' + viewing.id;
+                  window.location.hash = 'reviewing--' + viewing.friendlyId;
                   handleOutboundLink(viewing.url);
                 }}>PLAY</a>
               </div>
@@ -148,7 +149,7 @@ class App extends React.Component<any, AppState> {
                   ...this.state,
                   viewing: game,
                 });
-                window.location.hash = 'viewing--' + game.id;
+                window.location.hash = 'viewing--' + game.friendlyId;
               }}>
                 <img src='./info.svg' className='info-button' />
               </div>
@@ -174,7 +175,7 @@ class App extends React.Component<any, AppState> {
                   <h2>How was {reviewing.title}?</h2>
                   <RateGame game={reviewing} />
 
-                  TODO: add share buttons
+                  <ShareGame game={reviewing} />
                 </div>
               </div>
             ) : null
@@ -212,11 +213,7 @@ class RateGame extends React.Component<{ game: Game }, RateGameState> {
     return <div>
       {this.state.reviewSaving === 'not_selected'
         ? <>
-          <button onClick={() => this.rateGame(1)}>1</button>
-          <button onClick={() => this.rateGame(2)}>2</button>
-          <button onClick={() => this.rateGame(3)}>3</button>
-          <button onClick={() => this.rateGame(4)}>4</button>
-          <button onClick={() => this.rateGame(5)}>5</button>
+          <StarRating stars={5} onRate={(rating) => this.rateGame(rating)} />
         </>
         :
         this.state.reviewSaving === 'pending'
@@ -224,6 +221,24 @@ class RateGame extends React.Component<{ game: Game }, RateGameState> {
           : <>Saved</>
       }
     </div>;
+  }
+}
+
+class ShareGame extends React.Component<{ game: Game }> {
+  render() {
+    const game = this.props.game;
+    const title = encodeURIComponent(`Check out ${game.title}`);
+    const body = encodeURIComponent(`This game is awesome!\n${game.description}`);
+    const url = encodeURIComponent(`https://share.xrca.de/share/${game.friendlyId}`);
+    return <div>
+      <ul className="share-buttons">
+        <li><a href={`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${title}`} title="Share on Facebook" target="_blank"><img alt="Share on Facebook" src="images/social_flat_rounded_rects_svg/Facebook.svg" /></a></li>
+        <li><a href={`https://twitter.com/intent/tweet?source=${url}&text=${title}:%20${url}&via=jreeve0`} target="_blank" title="Tweet"><img alt="Tweet" src="images/social_flat_rounded_rects_svg/Twitter.svg" /></a></li>
+        <li><a href={`http://www.reddit.com/submit?url=${url}&title=${title}`} target="_blank" title="Submit to Reddit"><img alt="Submit to Reddit" src="images/social_flat_rounded_rects_svg/Reddit.svg" /></a></li>
+        <li><a href={`http://www.linkedin.com/shareArticle?mini=true&url=${url}&title=${title}&summary=${body}&source=${url}`} target="_blank" title="Share on LinkedIn"><img alt="Share on LinkedIn" src="images/social_flat_rounded_rects_svg/LinkedIn.svg" /></a></li>
+        <li><a href={`mailto:?subject=${title}&body=${body}:%20${url}`} target="_blank" title="Send email"><img alt="Send email" src="images/social_flat_rounded_rects_svg/Email.svg" /></a></li>
+      </ul>
+    </div>
   }
 }
 
@@ -235,4 +250,15 @@ function handleOutboundLink(href: string) {
     eventAction: 'click',
     eventLabel: href
   });
+}
+
+class StarRating extends React.Component<{ stars: number, onRate: (rating: number) => void }> {
+  render() {
+    const stars = ','.repeat(this.props.stars).split(',').map((_, index) => {
+      return <span className='star' onClick={() => this.props.onRate(index + 1)}>⭐</span>
+    });
+    return <div className="star-rating">
+      {stars}
+    </div>
+  }
 }

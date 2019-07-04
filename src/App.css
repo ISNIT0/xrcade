@@ -192,6 +192,20 @@
     cursor: pointer;
 }
 
+
+.star-rating {
+    font-size: 4vh;
+}
+
+.star-rating .star {
+    opacity: 1;
+    cursor: pointer;
+}
+
+.star-rating .star:hover~.star {
+    opacity: 0.4;
+}
+
 @media (max-height:600px) {
     .rating.pill {
         font-size: 4vh;
@@ -203,5 +217,9 @@
 
     .play-button {
         font-size: 6vh;
+    }
+
+    .star-rating {
+        font-size: 8vh;
     }
 }

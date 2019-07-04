@@ -120,6 +120,9 @@ class App extends React.Component<any, AppState> {
         <header className={`App-header ${!this.state.hasLoaded ? 'loading' : ''}`} style={{ opacity: showHeader ? 1 : 0 }}>
           XRca.de
         </header>
+        <div className="page-description" style={{ opacity: this.state.hasLoaded ? 1 : 0 }}>
+          Web games for your VR headset
+        </div>
 
         <div className={`viewing ${viewing && showGames ? 'show' : ''}`} id={viewing ? 'viewing--' + viewing.friendlyId : ''}>
           {viewing ? (<>

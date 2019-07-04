@@ -218,8 +218,22 @@
 
 .header-links a {
     margin: 20px;
-    color:#000;
+    color: #000;
     font-family: 'Major Mono Display', monospace;
+}
+
+.page-description {
+    transition-delay: 1s;
+    transition-duration: 0.8s;
+    font-family: 'Major Mono Display', monospace;
+    font-size: 1.7vh;
+    padding-top: 1vh;
+}
+
+@media (max-width:650px) {
+    .header-links {
+        display: none;
+    }
 }
 
 @media (max-height:600px) {
@@ -237,5 +251,10 @@
 
     .star-rating {
         font-size: 8vh;
+    }
+
+    .page-description {
+        padding-top: 2vh;
+        font-size: 4vh;
     }
 }

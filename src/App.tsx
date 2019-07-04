@@ -115,7 +115,7 @@ class App extends React.Component<any, AppState> {
       <div className="App">
         <div className="header-links" style={{ opacity: this.state.hasLoaded ? 1 : 0 }}>
           <a href="https://forms.gle/dFCBVWvpdVRW5ocE8" target='_blank'>submit</a>
-          <a href="https://share.xrca.de/auth/facebook" target='_blank'>login</a>
+          {/* <a href="https://share.xrca.de/auth/facebook" target='_blank'>login</a> */}
         </div>
         <header className={`App-header ${!this.state.hasLoaded ? 'loading' : ''}`} style={{ opacity: showHeader ? 1 : 0 }}>
           XRca.de

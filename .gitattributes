@@ -1,7 +1,5 @@
 public/videos/dance_tonite.mp4 filter=lfs diff=lfs merge=lfs -text
 public/videos/barista_express.mp4 filter=lfs diff=lfs merge=lfs -text
-public/images/dance_tonite.png filter=lfs diff=lfs merge=lfs -text
-public/images/barista_express.png filter=lfs diff=lfs merge=lfs -text
 public/images/logo.png filter=lfs diff=lfs merge=lfs -text
 public/images/share.png filter=lfs diff=lfs merge=lfs -text
 public/videos/the_hall.mp4 filter=lfs diff=lfs merge=lfs -text
@@ -36,3 +34,5 @@ public/images/vuppets.jpeg filter=lfs diff=lfs merge=lfs -text
 public/images/a_painter.jpeg filter=lfs diff=lfs merge=lfs -text
 public/images/blue_cyber.jpeg filter=lfs diff=lfs merge=lfs -text
 public/images/realms_vr.jpeg filter=lfs diff=lfs merge=lfs -text
+public/images/dance_tonite.png filter=lfs diff=lfs merge=lfs -text
+public/images/barista_express.png filter=lfs diff=lfs merge=lfs -text

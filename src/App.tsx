@@ -31,7 +31,8 @@ interface Game {
   video?: string,
   description: string,
   rating: number,
-  url: string
+  url: string,
+  showTitle?: boolean,
 }
 
 interface AppState {
@@ -40,6 +41,23 @@ interface AppState {
   games?: Game[],
   reviewing?: Game,
   viewing?: Game,
+}
+
+const startVideo = (ev: any) => {
+  const el = ev.target.closest('.game').querySelector('video');
+  el.play && el.play();
+}
+const stopVideo = (ev: any) => {
+  const el: HTMLVideoElement = ev.target.closest('.game').querySelector('video');
+  el.pause();
+  setTimeout(() => {
+    el.currentTime = 0;
+  });
+}
+const playGame = (game: Game) => {
+  handleOutboundLink(game.url);
+  window.location.hash = 'reviewing--' + game.friendlyId;
+  (window.location as any) = game.url;
 }
 
 function sleep(ms: number) {
@@ -53,15 +71,21 @@ class App extends React.Component<any, AppState> {
     hasLoaded: false,
   };
 
-  loadImages(imgUrls: string[]) {
-    return Promise.all(
-      imgUrls.map(url => fetch(url))
-    );
+  preloadImages(games: Game[]) {
+    return Promise.all(games.map(async (g, i) => {
+      if (i > 4) {
+        return g;
+      } else {
+        const blob = await fetch(g.poster).then(r => r.blob());
+        g.poster = URL.createObjectURL(blob);
+        return g;
+      }
+    }));
   }
 
   async loadDeps() {
-    const games = await getJSON<Game[]>(`${config.api}/game/all`);
-    await this.loadImages(games.slice(0, 8).map(g => g.poster));
+    let games = await getJSON<Game[]>(`${config.api}/game/all`);
+    games = await this.preloadImages(games);
     (this.state.baffle as any).reveal(500);
     await sleep(1000);
     this.setState({
@@ -98,19 +122,6 @@ class App extends React.Component<any, AppState> {
       window.location.hash = '';
       this.setState({ ...this.state, reviewing: undefined });
     };
-    const startVideo = (ev: any) => {
-      const el = ev.target.closest('.game').querySelector('video');
-      el.play && el.play();
-    }
-    const stopVideo = (ev: any) => {
-      const el = ev.target.closest('.game').querySelector('video');
-      el.load && el.load();
-    }
-    const playGame = (game: Game) => {
-      handleOutboundLink(game.url);
-      window.location.hash = 'reviewing--' + game.friendlyId;
-      (window.location as any) = game.url;
-    }
     return (
       <div className="App">
         <div className="header-links" style={{ opacity: this.state.hasLoaded ? 1 : 0 }}>
@@ -118,7 +129,7 @@ class App extends React.Component<any, AppState> {
           {/* <a href="https://share.xrca.de/auth/facebook" target='_blank'>login</a> */}
         </div>
         <header className={`App-header ${!this.state.hasLoaded ? 'loading' : ''}`} style={{ opacity: showHeader ? 1 : 0 }}>
-          XRca.de
+          <h1>XRca.de</h1>
         </header>
         <div className="page-description" style={{ opacity: this.state.hasLoaded ? 1 : 0 }}>
           Web games for your VR headset
@@ -148,29 +159,7 @@ class App extends React.Component<any, AppState> {
 
         <div className="games" style={{ opacity: showGames ? 1 : 0 }}>
           {(this.state.games || []).map(game => {
-            return <div className="game" id={game.id} onMouseEnter={startVideo} onMouseLeave={stopVideo} onClick={() => playGame(game)}>
-              <div className="info-button-cont" onClick={(ev) => {
-                ev.preventDefault();
-                ev.stopPropagation();
-                this.setState({
-                  ...this.state,
-                  viewing: game,
-                });
-                window.location.hash = 'viewing--' + game.friendlyId;
-              }}>
-                <img src='./info.svg' className='info-button' />
-              </div>
-              <video poster={game.poster} src={game.video} loop={true}></video>
-              <div className="info">
-                <div className='rating-cont'>
-                  <div className="rating pill"><span className="rating-num">{game.rating || '?'} </span><img src='./star.svg' /></div>
-                </div>
-                {game.description}
-                <br />
-                <br />
-                <a href={game.url} className="play-button" onClick={() => playGame(game)}>PLAY</a>
-              </div>
-            </div>
+            return <GameTile game={game} parent={this} />
           })}
         </div>
         <div className={`overlay ${reviewing ? 'show' : ''}`} onClick={closeOverlay}>
@@ -266,6 +255,40 @@ class StarRating extends React.Component<{ stars: number, onRate: (rating: numbe
     });
     return <div className="star-rating">
       {stars}
+    </div>
+  }
+}
+
+class GameTile extends React.Component<{ game: Game, parent: App }> {
+  render() {
+    // this whole "parent" thing is bad... very bad
+    const { game, parent } = this.props;
+    return <div className="game" id={game.id} onMouseEnter={startVideo} onMouseLeave={stopVideo} onClick={() => playGame(game)}>
+      <div className="info-button-cont" onClick={(ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        parent.setState({
+          ...this.state,
+          viewing: game,
+        });
+        window.location.hash = 'viewing--' + game.friendlyId;
+      }}>
+        <img src='./info.svg' className='info-button' />
+      </div>
+      <div className='preview'>
+        <img src={game.poster} alt="" />
+        <video poster={game.poster} src={game.video} loop={true}></video>
+        {game.showTitle !== false ? <h3>{game.title}</h3> : null}
+      </div>
+      <div className="info">
+        <div className='rating-cont'>
+          <div className="rating pill"><span className="rating-num">{game.rating || '?'} </span><img src='./star.svg' /></div>
+        </div>
+        {game.description}
+        <br />
+        <br />
+        <a href={game.url} className="play-button" onClick={() => playGame(game)}>PLAY</a>
+      </div>
     </div>
   }
 }

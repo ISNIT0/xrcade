@@ -261,7 +261,7 @@ function handleOutboundLink(href: string) {
 
 class StarRating extends React.Component<{ stars: number, onRate: (rating: number) => void }> {
   render() {
-    const stars = ','.repeat(this.props.stars).split(',').map((_, index) => {
+    const stars = ','.repeat(this.props.stars - 1).split(',').map((_, index) => {
       return <span className='star' onClick={() => this.props.onRate(index + 1)}>⭐</span>
     });
     return <div className="star-rating">

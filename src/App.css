@@ -206,6 +206,22 @@
     opacity: 0.4;
 }
 
+.header-links {
+    transition-duration: 0.3s;
+    transition-delay: 2s;
+    position: absolute;
+    right: 0;
+    top: 0;
+    display: flex;
+    justify-content: right;
+}
+
+.header-links a {
+    margin: 20px;
+    color:#000;
+    font-family: 'Major Mono Display', monospace;
+}
+
 @media (max-height:600px) {
     .rating.pill {
         font-size: 4vh;

@@ -125,7 +125,8 @@ class App extends React.Component<any, AppState> {
     return (
       <div className="App">
         <div className="header-links" style={{ opacity: this.state.hasLoaded ? 1 : 0 }}>
-          <a href="https://forms.gle/dFCBVWvpdVRW5ocE8" target='_blank'>submit</a>
+          <a href="https://webvr.info/" target='_blank' className='link'>how to play</a>
+          <a href="https://forms.gle/dFCBVWvpdVRW5ocE8" target='_blank' className='link'>submit</a>
           {/* <a href="https://share.xrca.de/auth/facebook" target='_blank'>login</a> */}
         </div>
         <header className={`App-header ${!this.state.hasLoaded ? 'loading' : ''}`} style={{ opacity: showHeader ? 1 : 0 }}>
@@ -177,6 +178,9 @@ class App extends React.Component<any, AppState> {
             ) : null
           }
         </div>
+        <footer>
+          A project by <a href="http://pur3.co.uk" target='_blank' className='link'>@gfwilliams</a> and <a href="https://simmsreeve.com" target='_blank' className='link'>@isnit0</a>
+        </footer>
       </div>
     );
   }

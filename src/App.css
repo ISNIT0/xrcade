@@ -258,8 +258,12 @@
 
 .header-links a {
     margin: 20px;
-    color: #000;
+}
+
+.link {
     font-family: 'Major Mono Display', monospace;
+    color: #000;
+    transition: 0.3s;
 }
 
 .page-description {
@@ -268,6 +272,17 @@
     font-family: 'Major Mono Display', monospace;
     font-size: 1.7vh;
     padding-top: 1vh;
+}
+
+footer {
+    font-family: 'Major Mono Display', monospace;
+    transition: 0.3s;
+    padding: 5vh;
+    opacity: 0.5;
+}
+
+footer:hover {
+    opacity: 1;
 }
 
 @media (max-width:650px) {

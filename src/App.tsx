@@ -179,7 +179,7 @@ class App extends React.Component<any, AppState> {
           }
         </div>
         <footer>
-          A project by <a href="http://pur3.co.uk" target='_blank' className='link'>@gfwilliams</a> and <a href="https://simmsreeve.com" target='_blank' className='link'>@isnit0</a>
+          A project by <a href="https://espruino.com" target='_blank' className='link'>@gfwilliams</a> and <a href="https://simmsreeve.com" target='_blank' className='link'>@isnit0</a>
         </footer>
       </div>
     );

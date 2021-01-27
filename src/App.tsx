@@ -133,9 +133,9 @@ class App extends React.Component<any, AppState> {
     return (
       <div className="App">
         <div className="header-links" style={{ opacity: this.state.hasLoaded ? 1 : 0 }}>
-          <a href="https://webvr.info/" target='_blank' className='link'>how to play</a>
-          <a href="https://forms.gle/dFCBVWvpdVRW5ocE8" target='_blank' className='link'>submit</a>
-          {/* <a href="https://share.xrca.de/auth/facebook" target='_blank'>login</a> */}
+          <a href="https://webvr.info/" target='_blank' rel='noopener noreferrer' className='link'>how to play</a>
+          <a href="https://forms.gle/dFCBVWvpdVRW5ocE8" target='_blank' rel='noopener noreferrer' className='link'>submit</a>
+          {/* <a href="https://share.xrca.de/auth/facebook" target='_blank' rel='noopener noreferrer'>login</a> */}
         </div>
         <header className={`App-header ${!this.state.hasLoaded ? 'loading' : ''}`} style={{ opacity: showHeader ? 1 : 0 }}>
           <h1>XRca.de</h1>
@@ -154,7 +154,7 @@ class App extends React.Component<any, AppState> {
               <div className="right">
                 {viewing.description}
                 <div className='rating-cont'>
-                  <div className="rating pill"><span className="rating-num">{viewing.rating || '?'} </span><img src='./star.svg' /></div>
+                  <div className="rating pill"><span className="rating-num">{viewing.rating || '?'} </span><img src='./star.svg' alt='star' /></div>
                 </div>
                 <ShareGame game={viewing} />
                 <a href={viewing.url} className="play-button" onClick={(ev) => {
@@ -187,7 +187,7 @@ class App extends React.Component<any, AppState> {
           }
         </div>
         <footer>
-          A project by <a href="https://espruino.com" target='_blank' className='link'>@gfwilliams</a> and <a href="https://simmsreeve.com" target='_blank' className='link'>@isnit0</a>
+          A project by <a href="https://espruino.com" target='_blank' rel='noopener noreferrer' className='link'>@gfwilliams</a> and <a href="https://simmsreeve.com" target='_blank' rel='noopener noreferrer' className='link'>@isnit0</a>
         </footer>
       </div>
     );
@@ -241,11 +241,11 @@ class ShareGame extends React.Component<{ game: Game }> {
     const url = encodeURIComponent(`https://share.xrca.de/share/${game.friendlyId}`);
     return <div>
       <ul className="share-buttons">
-        <li><a href={`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${title}`} title="Share on Facebook" target="_blank"><img alt="Share on Facebook" src="images/social_flat_rounded_rects_svg/Facebook.svg" /></a></li>
-        <li><a href={`https://twitter.com/intent/tweet?source=${url}&text=${title}:%20${url}&via=xrca_de`} target="_blank" title="Tweet"><img alt="Tweet" src="images/social_flat_rounded_rects_svg/Twitter.svg" /></a></li>
-        <li><a href={`http://www.reddit.com/submit?url=${url}&title=${title}`} target="_blank" title="Submit to Reddit"><img alt="Submit to Reddit" src="images/social_flat_rounded_rects_svg/Reddit.svg" /></a></li>
-        <li><a href={`http://www.linkedin.com/shareArticle?mini=true&url=${url}&title=${title}&summary=${body}&source=${url}`} target="_blank" title="Share on LinkedIn"><img alt="Share on LinkedIn" src="images/social_flat_rounded_rects_svg/LinkedIn.svg" /></a></li>
-        <li><a href={`mailto:?subject=${title}&body=${body}:%20${url}`} target="_blank" title="Send email"><img alt="Send email" src="images/social_flat_rounded_rects_svg/Email.svg" /></a></li>
+        <li><a href={`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${title}`} title="Share on Facebook" target="_blank" rel="noopener noreferrer"><img alt="Share on Facebook" src="images/social_flat_rounded_rects_svg/Facebook.svg" /></a></li>
+        <li><a href={`https://twitter.com/intent/tweet?source=${url}&text=${title}:%20${url}&via=xrca_de`} target="_blank" rel="noopener noreferrer" title="Tweet"><img alt="Tweet" src="images/social_flat_rounded_rects_svg/Twitter.svg" /></a></li>
+        <li><a href={`http://www.reddit.com/submit?url=${url}&title=${title}`} target="_blank" rel="noopener noreferrer" title="Submit to Reddit"><img alt="Submit to Reddit" src="images/social_flat_rounded_rects_svg/Reddit.svg" /></a></li>
+        <li><a href={`http://www.linkedin.com/shareArticle?mini=true&url=${url}&title=${title}&summary=${body}&source=${url}`} target="_blank" rel="noopener noreferrer" title="Share on LinkedIn"><img alt="Share on LinkedIn" src="images/social_flat_rounded_rects_svg/LinkedIn.svg" /></a></li>
+        <li><a href={`mailto:?subject=${title}&body=${body}:%20${url}`} target="_blank" rel="noopener noreferrer" title="Send email"><img alt="Send email" src="images/social_flat_rounded_rects_svg/Email.svg" /></a></li>
       </ul>
     </div>
   }
@@ -266,7 +266,7 @@ function handleOutboundLink(href: string) {
 class StarRating extends React.Component<{ stars: number, onRate: (rating: number) => void }> {
   render() {
     const stars = ','.repeat(this.props.stars - 1).split(',').map((_, index) => {
-      return <span className='star' onClick={() => this.props.onRate(index + 1)}>⭐</span>
+      return <span className='star' onClick={() => this.props.onRate(index + 1)} role='img' aria-label='star'>⭐</span>
     });
     return <div className="star-rating">
       {stars}
@@ -289,16 +289,16 @@ class GameTile extends React.Component<{ game: Game, parent: App }> {
         mixpanel.track("View info", { "game": game.friendlyId });
         window.location.hash = 'viewing--' + game.friendlyId;
       }}>
-        <img src='./info.svg' className='info-button' />
+        <img src='./info.svg' className='info-button' alt='info' />
       </div>
       <div className='preview'>
-        <img src={game.poster} alt="" />
+        <img src={game.poster} alt="game poster" />
         <video poster={game.poster} src={game.video} loop={true}></video>
         {game.showTitle !== false ? <h3>{game.title}</h3> : null}
       </div>
       <div className="info">
         <div className='rating-cont'>
-          <div className="rating pill"><span className="rating-num">{game.rating || '?'} </span><img src='./star.svg' /></div>
+          <div className="rating pill"><span className="rating-num">{game.rating || '?'} </span><img src='./star.svg' alt='star' /></div>
         </div>
         {game.description}
         <br />

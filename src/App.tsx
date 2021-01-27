@@ -4,6 +4,7 @@ import './App.css';
 import baffle from 'baffle';
 import { getJSON, postJSON } from './util';
 import { config } from './config';
+const mixpanel = (window as any).mixpanel;
 
 const gibberish = [
   '\u2588',
@@ -55,9 +56,16 @@ const stopVideo = (ev: any) => {
   });
 }
 const playGame = (game: Game) => {
+  mixpanel.track("Play game", { "game": game.friendlyId });
   handleOutboundLink(game.url);
   window.location.hash = 'reviewing--' + game.friendlyId;
-  (window.location as any) = game.url;
+
+  const $a = document.createElement('a');
+  $a.target = '_blank';
+  $a.href = game.url;
+  const el = document.body.appendChild($a);
+  el.click();
+  el.remove();
 }
 
 function sleep(ms: number) {
@@ -150,8 +158,8 @@ class App extends React.Component<any, AppState> {
                 </div>
                 <ShareGame game={viewing} />
                 <a href={viewing.url} className="play-button" onClick={(ev) => {
-                  window.location.hash = 'reviewing--' + viewing.friendlyId;
-                  handleOutboundLink(viewing.url);
+                  ev.preventDefault();
+                  playGame(viewing);
                 }}>PLAY</a>
               </div>
             </div>
@@ -204,6 +212,7 @@ class RateGame extends React.Component<{ game: Game }, RateGameState> {
   }
 
   async rateGame(rating: number) {
+    mixpanel.track("Rate game", { "game": this.state.game.friendlyId, rating });
     this.setState({ reviewSaving: 'pending' });
     await postJSON(`${config.api}/game/rate/${this.state.game.id}`, { value: rating });
     this.setState({ reviewSaving: 'saved' });
@@ -245,11 +254,13 @@ class ShareGame extends React.Component<{ game: Game }> {
 export default App;
 
 function handleOutboundLink(href: string) {
-  (window as any).ga('send', 'event', {
-    eventCategory: 'Outbound Link',
-    eventAction: 'click',
-    eventLabel: href
-  });
+  if ('ga' in window) {
+    (window as any).ga('send', 'event', {
+      eventCategory: 'Outbound Link',
+      eventAction: 'click',
+      eventLabel: href
+    });
+  }
 }
 
 class StarRating extends React.Component<{ stars: number, onRate: (rating: number) => void }> {
@@ -275,6 +286,7 @@ class GameTile extends React.Component<{ game: Game, parent: App }> {
           ...this.state,
           viewing: game,
         });
+        mixpanel.track("View info", { "game": game.friendlyId });
         window.location.hash = 'viewing--' + game.friendlyId;
       }}>
         <img src='./info.svg' className='info-button' />
@@ -291,7 +303,9 @@ class GameTile extends React.Component<{ game: Game, parent: App }> {
         {game.description}
         <br />
         <br />
-        <a href={game.url} className="play-button" onClick={() => playGame(game)}>PLAY</a>
+        <a href={game.url} className="play-button" onClick={(ev) => {
+          ev.preventDefault();
+        }}>PLAY</a>
       </div>
     </div>
   }

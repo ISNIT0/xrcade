@@ -1,72 +1,81 @@
-import React from 'react';
-import './App.css';
+import React from "react";
+import "./App.css";
 
-import baffle from 'baffle';
-import { getJSON, postJSON } from './util';
-import { config } from './config';
+import baffle from "baffle";
+import { getJSON, postJSON } from "./util";
+import { config } from "./config";
+import { defaultEventTrackingAdvancedPlugin } from "@amplitude/plugin-default-event-tracking-advanced-browser";
+import * as amplitude from "@amplitude/analytics-browser";
+
 const mixpanel = (window as any).mixpanel;
 
+amplitude.init("97c9903b921d3b09d49c3c38793a47c1");
+amplitude.add(defaultEventTrackingAdvancedPlugin());
+
 const gibberish = [
-  '\u2588',
-  '\u2593',
-  '\u2592',
-  '\u2591',
-  '\u2588',
-  '\u2593',
-  '\u2592',
-  '\u2591',
-  '\u2588',
-  '\u2593',
-  '\u2592',
-  '\u2591',
-  '\u003c',
-  '\u003e',
-  '\u002f'
+  "\u2588",
+  "\u2593",
+  "\u2592",
+  "\u2591",
+  "\u2588",
+  "\u2593",
+  "\u2592",
+  "\u2591",
+  "\u2588",
+  "\u2593",
+  "\u2592",
+  "\u2591",
+  "\u003c",
+  "\u003e",
+  "\u002f",
 ];
 
 interface Game {
-  id: string,
-  friendlyId: string,
-  title: string,
-  poster: string,
-  video?: string,
-  description: string,
-  rating: number,
-  url: string,
-  showTitle?: boolean,
+  id: string;
+  friendlyId: string;
+  title: string;
+  poster: string;
+  video?: string;
+  description: string;
+  rating: number;
+  url: string;
+  showTitle?: boolean;
 }
 
 interface AppState {
-  hasLoaded: boolean,
-  baffle?: any,
-  games?: Game[],
-  reviewing?: Game,
-  viewing?: Game,
+  hasLoaded: boolean;
+  baffle?: any;
+  games?: Game[];
+  reviewing?: Game;
+  viewing?: Game;
 }
 
 const startVideo = (ev: any) => {
-  const el = ev.target.closest('.game').querySelector('video');
+  const el = ev.target.closest(".game").querySelector("video");
   el.play && el.play();
-}
+};
 const stopVideo = (ev: any) => {
-  const el: HTMLVideoElement = ev.target.closest('.game').querySelector('video');
+  const el: HTMLVideoElement = ev.target
+    .closest(".game")
+    .querySelector("video");
   el.pause();
   setTimeout(() => {
     el.currentTime = 0;
   });
-}
+};
 const playGame = (game: Game) => {
-  mixpanel.track("Play game", { "game": game.friendlyId });
+  mixpanel.track("Play game", { game: game.friendlyId });
+  amplitude.track("Play game", { game: game.friendlyId });
   handleOutboundLink(game.url);
-  window.location.hash = 'reviewing--' + game.friendlyId;
+  window.location.hash = "reviewing--" + game.friendlyId;
 
-  const $a = document.createElement('a');
-  $a.target = '_blank';
+  const $a = document.createElement("a");
+  $a.target = "_blank";
   $a.href = game.url;
   const el = document.body.appendChild($a);
   el.click();
   el.remove();
-}
+};
 
 function sleep(ms: number) {
   return new Promise((resolve) => {
@@ -80,15 +89,17 @@ class App extends React.Component<any, AppState> {
   };
 
   preloadImages(games: Game[]) {
-    return Promise.all(games.map(async (g, i) => {
-      if (i > 4) {
-        return g;
-      } else {
-        const blob = await fetch(g.poster).then(r => r.blob());
-        g.poster = URL.createObjectURL(blob);
-        return g;
-      }
-    }));
+    return Promise.all(
+      games.map(async (g, i) => {
+        if (i > 4) {
+          return g;
+        } else {
+          const blob = await fetch(g.poster).then((r) => r.blob());
+          g.poster = URL.createObjectURL(blob);
+          return g;
+        }
+      })
+    );
   }
 
   async loadDeps() {
@@ -103,10 +114,12 @@ class App extends React.Component<any, AppState> {
       games,
     });
     if (window.location.hash) {
-      const [actionType, friendlyId] = window.location.hash.slice(1).split('--');
+      const [actionType, friendlyId] = window.location.hash
+        .slice(1)
+        .split("--");
       this.setState({
         ...this.state,
-        [actionType]: games.find(g => g.friendlyId === friendlyId)
+        [actionType]: games.find((g) => g.friendlyId === friendlyId),
       });
     }
   }
@@ -115,8 +128,11 @@ class App extends React.Component<any, AppState> {
     if (!this.state.hasLoaded && !this.state.baffle) {
       this.setState({
         ...this.state,
-        baffle: baffle('.App-header', { characters: gibberish, speed: 100 }).start()
-      })
+        baffle: baffle(".App-header", {
+          characters: gibberish,
+          speed: 100,
+        }).start(),
+      });
       this.loadDeps();
     }
   }
@@ -127,67 +143,132 @@ class App extends React.Component<any, AppState> {
     const reviewing = this.state.reviewing;
     const viewing = this.state.viewing;
     const closeOverlay = () => {
-      window.location.hash = '';
+      window.location.hash = "";
       this.setState({ ...this.state, reviewing: undefined });
     };
     return (
       <div className="App">
-        <div className="header-links" style={{ opacity: this.state.hasLoaded ? 1 : 0 }}>
-          <a href="https://webvr.info/" target='_blank' rel='noopener noreferrer' className='link'>how to play</a>
-          <a href="https://forms.gle/dFCBVWvpdVRW5ocE8" target='_blank' rel='noopener noreferrer' className='link'>submit</a>
+        <div
+          className="header-links"
+          style={{ opacity: this.state.hasLoaded ? 1 : 0 }}
+        >
+          <a
+            href="https://webvr.info/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="link"
+          >
+            how to play
+          </a>
+          <a
+            href="https://forms.gle/dFCBVWvpdVRW5ocE8"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="link"
+          >
+            submit
+          </a>
           {/* <a href="https://share.xrca.de/auth/facebook" target='_blank' rel='noopener noreferrer'>login</a> */}
         </div>
-        <header className={`App-header ${!this.state.hasLoaded ? 'loading' : ''}`} style={{ opacity: showHeader ? 1 : 0 }}>
+        <header
+          className={`App-header ${!this.state.hasLoaded ? "loading" : ""}`}
+          style={{ opacity: showHeader ? 1 : 0 }}
+        >
           <h1>XRca.de</h1>
         </header>
-        <div className="page-description" style={{ opacity: this.state.hasLoaded ? 1 : 0 }}>
+        <div
+          className="page-description"
+          style={{ opacity: this.state.hasLoaded ? 1 : 0 }}
+        >
           Web games for your VR headset
         </div>
 
-        <div className={`viewing ${viewing && showGames ? 'show' : ''}`} id={viewing ? 'viewing--' + viewing.friendlyId : ''}>
-          {viewing ? (<>
-            <h2>{viewing.title}</h2>
-            <div className="info">
-              <div className="left">
-                <video poster={viewing.poster} src={viewing.video} loop={true} autoPlay={true} controls></video>
-              </div>
-              <div className="right">
-                {viewing.description}
-                <div className='rating-cont'>
-                  <div className="rating pill"><span className="rating-num">{viewing.rating || '?'} </span><img src='./star.svg' alt='star' /></div>
+        <div
+          className={`viewing ${viewing && showGames ? "show" : ""}`}
+          id={viewing ? "viewing--" + viewing.friendlyId : ""}
+        >
+          {viewing ? (
+            <>
+              <h2>{viewing.title}</h2>
+              <div className="info">
+                <div className="left">
+                  <video
+                    poster={viewing.poster}
+                    src={viewing.video}
+                    loop={true}
+                    autoPlay={true}
+                    controls
+                  ></video>
                 </div>
-                <ShareGame game={viewing} />
-                <a href={viewing.url} className="play-button" onClick={(ev) => {
-                  ev.preventDefault();
-                  playGame(viewing);
-                }}>PLAY</a>
+                <div className="right">
+                  {viewing.description}
+                  <div className="rating-cont">
+                    <div className="rating pill">
+                      <span className="rating-num">
+                        {viewing.rating || "?"}{" "}
+                      </span>
+                      <img src="./star.svg" alt="star" />
+                    </div>
+                  </div>
+                  <ShareGame game={viewing} />
+                  <a
+                    href={viewing.url}
+                    className="play-button"
+                    onClick={(ev) => {
+                      ev.preventDefault();
+                      playGame(viewing);
+                    }}
+                  >
+                    PLAY
+                  </a>
+                </div>
               </div>
-            </div>
-          </>) : null}
+            </>
+          ) : null}
         </div>
 
         <div className="games" style={{ opacity: showGames ? 1 : 0 }}>
-          {(this.state.games || []).map(game => {
-            return <GameTile game={game} parent={this} />
+          {(this.state.games || []).map((game) => {
+            return <GameTile game={game} parent={this} />;
           })}
         </div>
-        <div className={`overlay ${reviewing ? 'show' : ''}`} onClick={closeOverlay}>
-          {
-            reviewing ? (
-              <div className="review-cont">
-                <div className="review" onClick={(ev) => ev.stopPropagation()}>
-                  <div className="close" onClick={closeOverlay}>x</div>
-                  <h2>How was {reviewing.title}?</h2>
-                  <RateGame game={reviewing} />
-
-                  <ShareGame game={reviewing} />
+        <div
+          className={`overlay ${reviewing ? "show" : ""}`}
+          onClick={closeOverlay}
+        >
+          {reviewing ? (
+            <div className="review-cont">
+              <div className="review" onClick={(ev) => ev.stopPropagation()}>
+                <div className="close" onClick={closeOverlay}>
+                  x
                 </div>
+                <h2>How was {reviewing.title}?</h2>
+                <RateGame game={reviewing} />
+
+                <ShareGame game={reviewing} />
               </div>
-            ) : null
-          }
+            </div>
+          ) : null}
         </div>
         <footer>
-          A project by <a href="https://espruino.com" target='_blank' rel='noopener noreferrer' className='link'>@gfwilliams</a> and <a href="https://simmsreeve.com" target='_blank' rel='noopener noreferrer' className='link'>@isnit0</a>
+          A project by{" "}
+          <a
+            href="https://espruino.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="link"
+          >
+            @gfwilliams
+          </a>{" "}
+          and{" "}
+          <a
+            href="https://simmsreeve.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="link"
+          >
+            @isnit0
+          </a>
         </footer>
       </div>
     );
@@ -195,41 +276,46 @@ class App extends React.Component<any, AppState> {
 }
 
 interface RateGameState {
-  game: Game,
-  reviewSaving: 'not_selected' | 'pending' | 'saved',
+  game: Game;
+  reviewSaving: "not_selected" | "pending" | "saved";
 }
 class RateGame extends React.Component<{ game: Game }, RateGameState> {
   state: any = {
     game: null,
-    reviewSaving: 'not_selected'
+    reviewSaving: "not_selected",
   };
 
   componentDidMount() {
     this.setState({
       ...this.state,
-      game: this.props.game
+      game: this.props.game,
     });
   }
 
   async rateGame(rating: number) {
-    mixpanel.track("Rate game", { "game": this.state.game.friendlyId, rating });
-    this.setState({ reviewSaving: 'pending' });
-    await postJSON(`${config.api}/game/rate/${this.state.game.id}`, { value: rating });
-    this.setState({ reviewSaving: 'saved' });
+    mixpanel.track("Rate game", { game: this.state.game.friendlyId, rating });
+    amplitude.track("Rate game", { game: this.state.game.friendlyId, rating });
+    this.setState({ reviewSaving: "pending" });
+    await postJSON(`${config.api}/game/rate/${this.state.game.id}`, {
+      value: rating,
+    });
+    this.setState({ reviewSaving: "saved" });
   }
 
   render() {
-    return <div>
-      {this.state.reviewSaving === 'not_selected'
-        ? <>
-          <StarRating stars={5} onRate={(rating) => this.rateGame(rating)} />
-        </>
-        :
-        this.state.reviewSaving === 'pending'
-          ? <>Saving...</>
-          : <>Saved</>
-      }
-    </div>;
+    return (
+      <div>
+        {this.state.reviewSaving === "not_selected" ? (
+          <>
+            <StarRating stars={5} onRate={(rating) => this.rateGame(rating)} />
+          </>
+        ) : this.state.reviewSaving === "pending" ? (
+          <>Saving...</>
+        ) : (
+          <>Saved</>
+        )}
+      </div>
+    );
   }
 }
 
@@ -237,76 +323,176 @@ class ShareGame extends React.Component<{ game: Game }> {
   render() {
     const game = this.props.game;
     const title = encodeURIComponent(`Check out ${game.title}`);
-    const body = encodeURIComponent(`This game is awesome!\n${game.description}`);
-    const url = encodeURIComponent(`https://share.xrca.de/share/${game.friendlyId}`);
-    return <div>
-      <ul className="share-buttons">
-        <li><a href={`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${title}`} title="Share on Facebook" target="_blank" rel="noopener noreferrer"><img alt="Share on Facebook" src="images/social_flat_rounded_rects_svg/Facebook.svg" /></a></li>
-        <li><a href={`https://twitter.com/intent/tweet?source=${url}&text=${title}:%20${url}&via=xrca_de`} target="_blank" rel="noopener noreferrer" title="Tweet"><img alt="Tweet" src="images/social_flat_rounded_rects_svg/Twitter.svg" /></a></li>
-        <li><a href={`http://www.reddit.com/submit?url=${url}&title=${title}`} target="_blank" rel="noopener noreferrer" title="Submit to Reddit"><img alt="Submit to Reddit" src="images/social_flat_rounded_rects_svg/Reddit.svg" /></a></li>
-        <li><a href={`http://www.linkedin.com/shareArticle?mini=true&url=${url}&title=${title}&summary=${body}&source=${url}`} target="_blank" rel="noopener noreferrer" title="Share on LinkedIn"><img alt="Share on LinkedIn" src="images/social_flat_rounded_rects_svg/LinkedIn.svg" /></a></li>
-        <li><a href={`mailto:?subject=${title}&body=${body}:%20${url}`} target="_blank" rel="noopener noreferrer" title="Send email"><img alt="Send email" src="images/social_flat_rounded_rects_svg/Email.svg" /></a></li>
-      </ul>
-    </div>
+    const body = encodeURIComponent(
+      `This game is awesome!\n${game.description}`
+    );
+    const url = encodeURIComponent(
+      `https://share.xrca.de/share/${game.friendlyId}`
+    );
+    return (
+      <div>
+        <ul className="share-buttons">
+          <li>
+            <a
+              href={`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${title}`}
+              title="Share on Facebook"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                alt="Share on Facebook"
+                src="images/social_flat_rounded_rects_svg/Facebook.svg"
+              />
+            </a>
+          </li>
+          <li>
+            <a
+              href={`https://twitter.com/intent/tweet?source=${url}&text=${title}:%20${url}&via=xrca_de`}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Tweet"
+            >
+              <img
+                alt="Tweet"
+                src="images/social_flat_rounded_rects_svg/Twitter.svg"
+              />
+            </a>
+          </li>
+          <li>
+            <a
+              href={`http://www.reddit.com/submit?url=${url}&title=${title}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Submit to Reddit"
+            >
+              <img
+                alt="Submit to Reddit"
+                src="images/social_flat_rounded_rects_svg/Reddit.svg"
+              />
+            </a>
+          </li>
+          <li>
+            <a
+              href={`http://www.linkedin.com/shareArticle?mini=true&url=${url}&title=${title}&summary=${body}&source=${url}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Share on LinkedIn"
+            >
+              <img
+                alt="Share on LinkedIn"
+                src="images/social_flat_rounded_rects_svg/LinkedIn.svg"
+              />
+            </a>
+          </li>
+          <li>
+            <a
+              href={`mailto:?subject=${title}&body=${body}:%20${url}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Send email"
+            >
+              <img
+                alt="Send email"
+                src="images/social_flat_rounded_rects_svg/Email.svg"
+              />
+            </a>
+          </li>
+        </ul>
+      </div>
+    );
   }
 }
 
 export default App;
 
 function handleOutboundLink(href: string) {
-  if ('ga' in window) {
-    (window as any).ga('send', 'event', {
-      eventCategory: 'Outbound Link',
-      eventAction: 'click',
-      eventLabel: href
+  if ("ga" in window) {
+    (window as any).ga("send", "event", {
+      eventCategory: "Outbound Link",
+      eventAction: "click",
+      eventLabel: href,
     });
   }
 }
 
-class StarRating extends React.Component<{ stars: number, onRate: (rating: number) => void }> {
+class StarRating extends React.Component<{
+  stars: number;
+  onRate: (rating: number) => void;
+}> {
   render() {
-    const stars = ','.repeat(this.props.stars - 1).split(',').map((_, index) => {
-      return <span className='star' onClick={() => this.props.onRate(index + 1)} role='img' aria-label='star'>⭐</span>
-    });
-    return <div className="star-rating">
-      {stars}
-    </div>
+    const stars = ","
+      .repeat(this.props.stars - 1)
+      .split(",")
+      .map((_, index) => {
+        return (
+          <span
+            className="star"
+            onClick={() => this.props.onRate(index + 1)}
+            role="img"
+            aria-label="star"
+          >
+            ⭐
+          </span>
+        );
+      });
+    return <div className="star-rating">{stars}</div>;
   }
 }
 
-class GameTile extends React.Component<{ game: Game, parent: App }> {
+class GameTile extends React.Component<{ game: Game; parent: App }> {
   render() {
     // this whole "parent" thing is bad... very bad
     const { game, parent } = this.props;
-    return <div className="game" id={game.id} onMouseEnter={startVideo} onMouseLeave={stopVideo} onClick={() => playGame(game)}>
-      <div className="info-button-cont" onClick={(ev) => {
-        ev.preventDefault();
-        ev.stopPropagation();
-        parent.setState({
-          ...this.state,
-          viewing: game,
-        });
-        mixpanel.track("View info", { "game": game.friendlyId });
-        window.location.hash = 'viewing--' + game.friendlyId;
-      }}>
-        <img src='./info.svg' className='info-button' alt='info' />
-      </div>
-      <div className='preview'>
-        <img src={game.poster} alt="game poster" />
-        <video poster={game.poster} src={game.video} loop={true}></video>
-        {game.showTitle !== false ? <h3>{game.title}</h3> : null}
-      </div>
-      <div className="info">
-        <div className='rating-cont'>
-          <div className="rating pill"><span className="rating-num">{game.rating || '?'} </span><img src='./star.svg' alt='star' /></div>
+    return (
+      <div
+        className="game"
+        id={game.id}
+        onMouseEnter={startVideo}
+        onMouseLeave={stopVideo}
+        onClick={() => playGame(game)}
+      >
+        <div
+          className="info-button-cont"
+          onClick={(ev) => {
+            ev.preventDefault();
+            ev.stopPropagation();
+            parent.setState({
+              ...this.state,
+              viewing: game,
+            });
+            mixpanel.track("View info", { game: game.friendlyId });
+            amplitude.track("View info", { game: game.friendlyId });
+            window.location.hash = "viewing--" + game.friendlyId;
+          }}
+        >
+          <img src="./info.svg" className="info-button" alt="info" />
         </div>
-        {game.description}
-        <br />
-        <br />
-        <a href={game.url} className="play-button" onClick={(ev) => {
-          ev.preventDefault();
-        }}>PLAY</a>
+        <div className="preview">
+          <img src={game.poster} alt="game poster" />
+          <video poster={game.poster} src={game.video} loop={true}></video>
+          {game.showTitle !== false ? <h3>{game.title}</h3> : null}
+        </div>
+        <div className="info">
+          <div className="rating-cont">
+            <div className="rating pill">
+              <span className="rating-num">{game.rating || "?"} </span>
+              <img src="./star.svg" alt="star" />
+            </div>
+          </div>
+          {game.description}
+          <br />
+          <br />
+          <a
+            href={game.url}
+            className="play-button"
+            onClick={(ev) => {
+              ev.preventDefault();
+            }}
+          >
+            PLAY
+          </a>
+        </div>
       </div>
-    </div>
+    );
   }
 }
